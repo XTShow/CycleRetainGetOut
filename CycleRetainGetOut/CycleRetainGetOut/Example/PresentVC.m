@@ -8,6 +8,8 @@
 
 #import "PresentVC.h"
 #import "NSTimer+CycleRetainGetOut.h"
+#import "XTTimer.h"
+#import "TimerManager.h"
 
 @interface PresentVC ()
 @property (nonatomic,weak) NSTimer *timer;
@@ -20,45 +22,92 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor grayColor];
     
-//    [self useTimerInWeak];
+//    [self useTimerInDelegate];
+    [self useTimerInWeak];
 //    [self checkTimerRelease];
 //    [self checkTimerReleaseInTradition];
+//    [self onlyNewTimer];
+//    [self creatTimerInNewApi];//即使用这种方式，内存还是不会立即释放
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
+
     //checkTimerReleaseInTradition
-    for (NSTimer *timer in self.timerArray) {
-        [timer invalidate];
-    }
+//    for (NSTimer *timer in self.timerArray) {
+//        [timer invalidate];
+//    }
 }
 
 -(void)dealloc{
     
-    NSLog(@"%@%s",[self class],__func__);
-    //常规使用
+    NSLog(@"%s",__func__);
+    
+    //使用代理解耦（useTimerInDelegate）
+    [self.timer invalidate];
+    
+    //常规使用（useTimerInWeak）
 //    NSLog(@"before-%@",self.timer);
 //    [self.timer invalidate];
 //    NSLog(@"after-%@",self.timer);
     
     //检测NSTimer的释放（checkTimerRelease）
-    for (NSTimer *timer in self.timerArray) {
-        [timer invalidate];
-    }
+//    for (NSTimer *timer in self.timerArray) {
+//        [timer invalidate];
+//    }
+    
+    //检测去耦合的timer（onlyNewTimer）
+//    self.timerArray = [NSMutableArray array];
+    
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - NSTimer调用方法
+- (void)dosth:(NSDictionary *)dic {
+    NSLog(@"%@:%@说自己%@已经20多年了",[self class],dic[@"name"],dic[@"age"]);
+}
+
+- (void)dosthWithTimer:(NSTimer *)timer {
+    NSLog(@"%@:我在使用%@做事情",[self class],timer.userInfo);
+}
+
+- (void)dosth {
+    NSLog(@"%@在做事情",[self class]);
+}
+
+#pragma mark - 为NSTimer解耦的方式
+
+//使用代理解耦
+- (void)useTimerInDelegate {
+    
+    //此处可以将TimerManager生成一个单例模式，全局所有的timer的处理都可以由他来进行，但此处为了演示manager的释放，故如此实现。
+    //传入需求对象（一般就是当前self），注意此处被manager全局持有时，要使用weak修饰，不然manager和self相互持有，仍然无法释放。
+    TimerManager *manager = [[TimerManager alloc] initWithObj:self];
+    
+    //千万不要讲self封入userInfo之中，因为timer和userInfo是强引用的关系，会破坏解耦的目的。
+    NSDictionary *userInfo = @{
+                               @"SEL":NSStringFromSelector(@selector(dosth:)),
+                               @"para":@{
+                                       @"name":@"XTShow",
+                                       @"age":@"18"
+                                       }
+                               };
+    
+    //此处的target是代理对象，selector是代理协议中的方法
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self.delegate selector:@selector(useTimer:) userInfo:userInfo repeats:YES];
+}
+
 //模拟常规使用NSTimer
 - (void)useTimerInWeak {
     
-    __weak __typeof__(self)weakSelf = self;
-    
-    self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^{
-        [weakSelf dosth];
-    } userInfo:@"asd" repeats:YES];
+__weak __typeof__(self)weakSelf = self;
+
+self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
+    [weakSelf dosthWithTimer:timer];
+} userInfo:@"useTimerInWeak" repeats:YES];
 
 }
 
@@ -70,7 +119,7 @@
     __weak __typeof__(self)weakSelf = self;
     for (int i = 0; i < 10000; i++) {
         
-        NSTimer *timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^{
+        NSTimer *timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
             [weakSelf dosth];
         } userInfo:@"asd" repeats:YES];
         
@@ -91,7 +140,34 @@
     }
 }
 
-- (void)dosth {
-    NSLog(@"%@在做事情",[self class]);
+//只是new timer，完全避免耦合
+- (void)onlyNewTimer {
+    
+    self.timerArray = [NSMutableArray array];
+    
+    for (int i = 0; i < 10000; i++) {
+        
+        XTTimer *timer = [XTTimer new];
+        
+        [self.timerArray addObject:timer];
+    }
 }
+
+//使用iOS10中新出现的api生产timer
+- (void)creatTimerInNewApi {
+    
+    __weak __typeof__(self)weakSelf = self;
+    for (int i = 0; i < 10000; i++) {
+        
+        if (@available(iOS 10.0, *)) {
+            [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                [weakSelf dosth];
+            }];
+        } else {
+            
+        }
+        
+    }
+}
+
 @end

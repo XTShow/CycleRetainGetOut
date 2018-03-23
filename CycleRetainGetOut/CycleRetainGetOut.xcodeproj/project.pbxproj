@@ -15,6 +15,8 @@
 		720D59BB20639BB000D3F13B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 720D59BA20639BB000D3F13B /* main.m */; };
 		720D59C720639D4700D3F13B /* NSTimer+CycleRetainGetOut.m in Sources */ = {isa = PBXBuildFile; fileRef = 720D59C620639D4700D3F13B /* NSTimer+CycleRetainGetOut.m */; };
 		720D59CB2063AF0900D3F13B /* PresentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 720D59CA2063AF0900D3F13B /* PresentVC.m */; };
+		720D59CE206487A400D3F13B /* XTTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 720D59CD206487A400D3F13B /* XTTimer.m */; };
+		720D59D12064DDED00D3F13B /* TimerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 720D59D02064DDED00D3F13B /* TimerManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,10 @@
 		720D59C620639D4700D3F13B /* NSTimer+CycleRetainGetOut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+CycleRetainGetOut.m"; sourceTree = "<group>"; };
 		720D59C92063AF0900D3F13B /* PresentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentVC.h; sourceTree = "<group>"; };
 		720D59CA2063AF0900D3F13B /* PresentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentVC.m; sourceTree = "<group>"; };
+		720D59CC206487A400D3F13B /* XTTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTTimer.h; sourceTree = "<group>"; };
+		720D59CD206487A400D3F13B /* XTTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTTimer.m; sourceTree = "<group>"; };
+		720D59CF2064DDED00D3F13B /* TimerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerManager.h; sourceTree = "<group>"; };
+		720D59D02064DDED00D3F13B /* TimerManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +99,10 @@
 			children = (
 				720D59C92063AF0900D3F13B /* PresentVC.h */,
 				720D59CA2063AF0900D3F13B /* PresentVC.m */,
+				720D59CC206487A400D3F13B /* XTTimer.h */,
+				720D59CD206487A400D3F13B /* XTTimer.m */,
+				720D59CF2064DDED00D3F13B /* TimerManager.h */,
+				720D59D02064DDED00D3F13B /* TimerManager.m */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -169,6 +179,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				720D59B020639BB000D3F13B /* ViewController.m in Sources */,
+				720D59CE206487A400D3F13B /* XTTimer.m in Sources */,
+				720D59D12064DDED00D3F13B /* TimerManager.m in Sources */,
 				720D59CB2063AF0900D3F13B /* PresentVC.m in Sources */,
 				720D59C720639D4700D3F13B /* NSTimer+CycleRetainGetOut.m in Sources */,
 				720D59BB20639BB000D3F13B /* main.m in Sources */,

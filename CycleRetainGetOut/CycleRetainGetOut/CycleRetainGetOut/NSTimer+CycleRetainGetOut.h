@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSTimer (CycleRetainGetOut)
-+ (NSTimer *)XT_scheduledTimerWithTimeInterval:(NSTimeInterval)ti block:(void(^)(void))block userInfo:(id)userInfo repeats:(BOOL)yesOrNo;
++ (NSTimer *)XT_scheduledTimerWithTimeInterval:(NSTimeInterval)ti block:(void(^)(NSTimer *timer))block userInfo:(id)userInfo repeats:(BOOL)yesOrNo;
 @end

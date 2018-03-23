@@ -10,7 +10,7 @@
 #import <objc/runtime.h>
 
 static NSString * const BlockKey = @"BlockKey";
-typedef void(^SelectorBlock)(void);
+typedef void(^SelectorBlock)(NSTimer *timer);
 
 @interface NSTimer()
 
@@ -28,7 +28,7 @@ typedef void(^SelectorBlock)(void);
     return objc_getAssociatedObject(self, &BlockKey);
 }
 
-+ (NSTimer *)XT_scheduledTimerWithTimeInterval:(NSTimeInterval)ti block:(void(^)(void))block userInfo:(id)userInfo repeats:(BOOL)yesOrNo {
++ (NSTimer *)XT_scheduledTimerWithTimeInterval:(NSTimeInterval)ti block:(void(^)(NSTimer *timer))block userInfo:(id)userInfo repeats:(BOOL)yesOrNo {
     
     NSTimer *timer = [self scheduledTimerWithTimeInterval:ti target:self selector:@selector(performBlock:) userInfo:userInfo repeats:yesOrNo];
     timer.block = block;
@@ -38,7 +38,7 @@ typedef void(^SelectorBlock)(void);
 
 + (void)performBlock:(NSTimer *)timer {
     if (timer.block) {
-        timer.block();
+        timer.block(timer);
     }
 }
 
