@@ -8,7 +8,6 @@
 
 #import "PresentVC.h"
 #import "NSTimer+CycleRetainGetOut.h"
-#import "XTTimer.h"
 #import "TimerManager.h"
 
 @interface PresentVC ()
@@ -23,17 +22,17 @@
     self.view.backgroundColor = [UIColor grayColor];
     
 //    [self useTimerInDelegate];
-    [self useTimerInWeak];
+    [self useTimerInCategory];
 //    [self checkTimerRelease];
 //    [self checkTimerReleaseInTradition];
-//    [self onlyNewTimer];
-//    [self creatTimerInNewApi];//即使用这种方式，内存还是不会立即释放
+//    [self creatTimerInNewApi];
+//    [self newOBj];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 
-    //checkTimerReleaseInTradition
+    //4.checkTimerReleaseInTradition
 //    for (NSTimer *timer in self.timerArray) {
 //        [timer invalidate];
 //    }
@@ -43,22 +42,18 @@
     
     NSLog(@"%s",__func__);
     
-    //使用代理解耦（useTimerInDelegate）
-    [self.timer invalidate];
-    
-    //常规使用（useTimerInWeak）
-//    NSLog(@"before-%@",self.timer);
+    //1.使用代理解耦（useTimerInDelegate）
 //    [self.timer invalidate];
-//    NSLog(@"after-%@",self.timer);
     
-    //检测NSTimer的释放（checkTimerRelease）
+    //2.使用Category解耦（useTimerInCategory）
+    NSLog(@"before-%@",self.timer);
+    [self.timer invalidate];
+    NSLog(@"after-%@",self.timer);
+    
+    //3.检测NSTimer的释放（checkTimerRelease）
 //    for (NSTimer *timer in self.timerArray) {
 //        [timer invalidate];
 //    }
-    
-    //检测去耦合的timer（onlyNewTimer）
-//    self.timerArray = [NSMutableArray array];
-    
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -100,14 +95,14 @@
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self.delegate selector:@selector(useTimer:) userInfo:userInfo repeats:YES];
 }
 
-//模拟常规使用NSTimer
-- (void)useTimerInWeak {
+//使用Category解耦
+- (void)useTimerInCategory {
     
-__weak __typeof__(self)weakSelf = self;
+    __weak __typeof__(self)weakSelf = self;
 
-self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
-    [weakSelf dosthWithTimer:timer];
-} userInfo:@"useTimerInWeak" repeats:YES];
+    self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer) {
+        [weakSelf dosthWithTimer:timer];
+    } userInfo:@"useTimerInCategory" repeats:YES];
 
 }
 
@@ -140,19 +135,6 @@ self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer
     }
 }
 
-//只是new timer，完全避免耦合
-- (void)onlyNewTimer {
-    
-    self.timerArray = [NSMutableArray array];
-    
-    for (int i = 0; i < 10000; i++) {
-        
-        XTTimer *timer = [XTTimer new];
-        
-        [self.timerArray addObject:timer];
-    }
-}
-
 //使用iOS10中新出现的api生产timer
 - (void)creatTimerInNewApi {
     
@@ -167,6 +149,15 @@ self.timer = [NSTimer XT_scheduledTimerWithTimeInterval:1 block:^(NSTimer *timer
             
         }
         
+    }
+}
+
+//使用NSObject测试内存释放
+- (void)newOBj {
+    self.timerArray = [NSMutableArray array];
+    for (int i = 0; i < 10000; i++) {
+        NSObject *obj = [NSObject new];
+        [self.timerArray addObject:obj];
     }
 }
 
