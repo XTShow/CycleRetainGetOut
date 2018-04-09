@@ -17,12 +17,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    [btn setCenter:self.view.center];
+    [btn setBackgroundColor:[UIColor grayColor]];
+    [btn setTitle:@"Click,See Debug Area" forState:UIControlStateNormal];
+    btn.titleLabel.numberOfLines = 0;
+    btn.layer.masksToBounds = YES;
+    btn.layer.cornerRadius = 5;
+    [self.view addSubview:btn];
+    [btn addTarget:self action:@selector(present) forControlEvents:UIControlEventTouchUpInside];
+    
 }
 
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+-(void)present{
     [self presentViewController:[PresentVC new] animated:YES completion:nil];
 }
-
-
 @end
